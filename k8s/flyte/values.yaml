@@ -1,0 +1,39 @@
+configuration:
+  database:
+    password: flyte_password
+    username: flyte
+    host: postgres.default.svc.cluster.local 
+    dbname: flyte
+  storage:
+    metadataContainer: flyte-meta-data
+    userDataContainer: flyte-user-data
+    provider: s3
+    providerConfig:
+      s3:
+        region: "us-east-1"
+        authType: "accesskey"
+        accessKey: rootuser 
+        secretKey: rootpass123
+        endpoint: http://minio.minio.svc.cluster.local:9000
+        disableSSL: "true"
+        secure: "false"
+  inline:
+    plugins:
+      k8s:
+        inject-finalizer: true
+        default-env-vars:
+          - FLYTE_AWS_ENDPOINT: "http://minio.minio.svc.cluster.local:9000"
+          - FLYTE_AWS_ACCESS_KEY_ID: "rootuser"
+          - FLYTE_AWS_SECRET_ACCESS_KEY: "rootpass123" #Use the same value as the MINIO_ROOT_PASSWORD
+    storage:
+      cache:
+        max_size_mbs: 100
+        target_gc_percent: 100
+    task_resources:
+      defaults: 
+        cpu: 100m
+        memory: 500Mi #change default requested resources and limits to fit your needs
+      limits:
+        memory: 2Gi
+serviceAccount:
+  create: true
