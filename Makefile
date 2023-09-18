@@ -35,6 +35,13 @@ install_infra: k8s_connect
 		--values ./k8s/flyte/values.yaml \
 		flyte flyte/flyte-binary
 
+.PHONY: port_forward_all
+port_forward_all: k8s_connect
+	kubectl port-forward svc/minio -n minio 9000 & 
+	kubectl port-forward svc/flyte-flyte-binary-grpc -n flyte 8089 & 
+	kubectl port-forward svc/flyte-flyte-binary-http -n flyte 8088 & 
+
+
 # loads the docker containers into the kind environments
 #.PHONY: k8s_side_load
 #k8s_side_load: k8s_connect
