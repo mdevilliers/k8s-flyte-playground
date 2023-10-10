@@ -43,10 +43,10 @@ port_forward_all: k8s_connect
 
 
 # loads the docker containers into the kind environments
-#.PHONY: k8s_side_load
-#k8s_side_load: k8s_connect
-#	kind load docker-image example-app --name $(KIND_INSTANCE)
+.PHONY: k8s_side_load
+k8s_side_load: k8s_connect
+	kind load docker-image flyte-example --name $(KIND_INSTANCE)
 
-#.PHONY: build_docker_image
-#build_docker_image:
-#	docker build -t fib-app:latest .
+.PHONY: build_docker_image
+build_docker_image:
+	docker build -t flyte-example:latest .

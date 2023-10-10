@@ -58,4 +58,5 @@ def weird_workflow() -> None:
     three_c_promise >> four_promise
     three_d_promise >> four_promise
 
-
+if __name__ == "__main__":
+    weird_workflow()
