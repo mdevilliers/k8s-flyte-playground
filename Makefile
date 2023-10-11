@@ -1,4 +1,6 @@
 KIND_INSTANCE=k8s-flyte-playground
+IMAGE_NAME=weird-workflow
+IMAGE_VERSION=1.0.1
 
 # creates a K8s instance
 .PHONY: k8s_new
@@ -45,8 +47,17 @@ port_forward_all: k8s_connect
 # loads the docker containers into the kind environments
 .PHONY: k8s_side_load
 k8s_side_load: k8s_connect
-	kind load docker-image flyte-example --name $(KIND_INSTANCE)
+	kind load docker-image ${IMAGE_NAME} --name $(KIND_INSTANCE)
 
 .PHONY: build_docker_image
 build_docker_image:
-	docker build -t flyte-example:latest .
+	docker build -t ${IMAGE_NAME}:${IMAGE_VERSION} .
+
+.PHONY: deploy
+deploy:
+	poetry run pyflyte --pkgs src --verbose package --output ${IMAGE_NAME}.tgz -f --image localhost:30000/${IMAGE_NAME}:${IMAGE_VERSION}
+	flytectl register files --project flytesnacks --domain development --archive ${IMAGE_NAME}.tgz  --version ${IMAGE_VERSION}
+
+.PHONY: run
+run:
+	pyflyte run --remote src/example.py weird_workflow
