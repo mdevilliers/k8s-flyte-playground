@@ -3,6 +3,7 @@ Create environment with KIND and install flyte and minio
 
 ```
 make k8s_up
+make helm_init
 make install_infra
 ```
 
